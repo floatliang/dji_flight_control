@@ -3,7 +3,7 @@ GPS,Imu,AoA and WiFi based localization and flight control.
 
 # GPS-based flight
 
-This demo consists of two files : `demo_flight_control.h` and `demo_flight_control.cpp`.Now let's get started with its data struct.
+This demo consists of two files : `flight_control_gps.h` and `flight_control_gps.cpp`.Now let's get started with its data struct.
 
 ## Data struct
 

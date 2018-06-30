@@ -34,7 +34,6 @@ This demo consists of two files : `demo_flight_control.h` and `demo_flight_contr
 -  Global variable `land_gps_position` and `home_gps_position` indicate the position drone take off and the position drone finished taking off.
 
 ## Functions
-
 - Member function `step()` of Class `Mission` compare its current GPS position and target position, and publish `controlPosYaw` messages of next step to [dji_sdk/flight_control_setpoint_ENUposition_yaw](wiki.ros.org/dji_sdk) topic which subscribed by master node.
 - `localOffsetFromGpsOffset()` is a simplified calculation of local NED offset between two pairs of GPS coordinates. It is accurate when distances are small.
 - `flight_status_callback()` subscribes to [dji_sdk/flight_status](wiki.ros.org/dji_sdk) topic and get `M100FlightStatus` of drone from master node.
@@ -67,3 +66,43 @@ This demo consists of two files : `demo_flight_control.h` and `demo_flight_contr
 $ source {$WORKSPACE_DIR}/devel/setup.bash
 $ rosrun flight_control flight_control_gps
 ```
+
+# IMU-based flight
+
+This demo consists of two files : `demo_flight_control.h` and `demo_flight_control.cpp`,and uses imu data from guidance to locate drone.
+
+## Variables
+- `global_q` is a `Eigen::Quaterniond` variable,it is the accumulative quaterniond rotation after the drone taking off.
+- `g` is a `Eigen::Vector3d` variable,it is a average value of 500 Imu acceleration when drone in ground.It is mainly used to eliminate the effect of gravity,but will still have accumulative error as it only caculate the first 500 data.
+- `current_global_pos`  and `current_global_vel` is accumulative distance and velocity after drone taking off.Velocity acculated from Imu acceleration data using equation `v=a*dt`,and distance acculated from velocity using equation `x=v*dt+1/2*a*(dt)^2`.
+
+## Functions
+- `accumulate_distance()` rotate the Imu acceleration from local(relative to the drone's coordinate system) to global(relative to the world's coordinate system) frame.Then integrate accleration to caculate distance from the taking off point.
+- `my_callback()` is a shared callback function used by subscriber threads.It will do a certain callback job according to `data_type` variable.
+- `select_imu()` and those similar function are used to subscribe a topic,e.g. `select_imu()` will subscribe a Imu topic and get data  from Guidance who publish data to Imu topic.All these function will use `my_callback()` function as callback function.
+
+You can visit [Guidance SDK Reference](https://developer.dji.com/guidance-sdk/documentation/introduction/index.html) to get more information.
+
+## Installation
+1. Make sure you have installed the previous `GPS-based flight` demo,Guidance node will transfer location information to `demo_flight_control` node though `/guidance/global_position` topic.
+2. Make sure you have installed [Onboard-SDK-ROS](https://github.com/dji-sdk/Guidance-SDK-ROS) package.
+3. Replace 'GuidanceNode.cpp' with our file.
+4. `catkin_make` your workspace.
+4. If you are in simulation,make sure you have opened `DJI Assitant2` simulation and turned the remote control to `F` mode.
+5. Launch DJI master node:
+
+```shell
+$ source {$WORKSPACE_DIR}/devel/setup.bash
+$ roslaunch dji_sdk sdk.launch
+```
+6. `rosrun` Guidance node:
+
+```shell
+$ rosrun guidance guidancenode
+```
+7. `rosrun` `demo_flight_control` node:
+
+```shell
+$ rosrun dji_sdk_demo demo_flight_control
+```
+

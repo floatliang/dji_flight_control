@@ -110,3 +110,27 @@ $ rosrun dji_sdk_demo demo_flight_control
 ```shell
 $ rosrun rviz rviz
 ```
+
+# Install wireless_localization package
+
+In this step we will install `wireless_localization` package and its dependencies packages.
+
+## Download dependencies
+- You can search [Technische Universität Darmstadt ROS Packages](https://github.com/tu-darmstadt-ros-pkg) and [libing64](https://github.com/libing64) to get these packages.
+	* `ros_control-indigo-devel`,`hector_localization-catkin`,`control_toolbox-kinetic-devel`,`gazebo_ros_control-jade-devel`,`geographic_info-master`,`hector_gazebo-indigo-devel`,`hector_models-indigo-devel`,`hector_quadrotor-indigo-devel`,`realtime_tools-indigo-devel`,`unique_identifier-master`,`wireless_localization-master`.
+	* **NOTE** that `pid.cpp` file in `control_toolbox-kinetic-devel` package has serveral wrong variable name:Member variable in `Gains` should be `p`,`i`,`d` except `p_gain_`,`i_gain_`,`d_gain_`.You should modify `pid.cpp` file before install `control_toolbox-kinetic-devel` package.
+- You can search [ceres](www.ceres-solver.org/installation.html) and `Eigen` packages in their official website.
+
+## Installation
+
+- Add these packages into `hector_quadrotor-indigo-devel` package as its sub packages.It should look like this:
+
+![packages1.png](https://bitbucket.org/repo/Lo6GLLM/images/3135518774-packages1.png)
+
+- `cmake` and `make` you packages:
+
+```shell
+$ cmake hector_quadrotor-indigo-devel/CMakeLists.txt
+$ make 
+$ sudo make install        #if you want
+```

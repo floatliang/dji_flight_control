@@ -125,7 +125,7 @@ In this step we will install `wireless_localization` package and its dependencie
 
 - Add these packages into `hector_quadrotor-indigo-devel` package as its sub packages.It should look like this:
 
-![packages1.png](https://bitbucket.org/repo/Lo6GLLM/images/3135518774-packages1.png)
+![packages1.png](https://github.com/floatliang/dji_flight_control/blob/master/packages1.png)
 
 - `cmake` and `make` you packages:
 
